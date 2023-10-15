@@ -22,14 +22,8 @@ function App() {
 
     // draw
     const roughCanvas = rough.canvas(canvas);
-    const rectangle = roughGenerator.rectangle(100, 100, 100, 100);
 
     elements.forEach(({ roughElement }) => roughCanvas.draw(roughElement));
-
-    roughCanvas.draw(rectangle);
-
-    context.fillStyle = 'red';
-    context.fillRect(50, 50, 100, 100);
   }, [elements]);
 
   const handleMouseDown = (
