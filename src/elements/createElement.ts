@@ -1,8 +1,9 @@
 import rough from 'roughjs';
+import { DrawElement } from './type';
 
 const generator = rough.generator();
 
-export const createElement = (x1, y1, x2, y2, type) => {
+export const createElement = (x1, y1, x2, y2, type): DrawElement => {
   let roughElement = generator.line(x1, y1, x2, y2);
 
   switch (type) {

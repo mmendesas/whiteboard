@@ -3,14 +3,13 @@ import rough from 'roughjs';
 
 import { useWindowResize } from './hooks/useWindowResize';
 import { createElement } from './elements/createElement';
-
-const roughGenerator = rough.generator();
+import { Actions, DrawElement, UserAction } from './elements/type';
 
 function App() {
   const { width: canvasWidth, height: canvasHeight } = useWindowResize();
 
-  const [elements, setElements] = useState([]);
-  const [drawing, setDrawing] = useState(false);
+  const [elements, setElements] = useState<DrawElement[]>([]);
+  const [action, setAction] = useState<Actions>(Actions.NONE);
   const [elementType, setElementType] = useState('line');
 
   useLayoutEffect(() => {
@@ -29,7 +28,7 @@ function App() {
   const handleMouseDown = (
     event: React.MouseEvent<HTMLCanvasElement>
   ): void => {
-    setDrawing(true);
+    setAction(Actions.DRAWING);
 
     const { clientX, clientY } = event;
 
@@ -44,25 +43,31 @@ function App() {
   };
 
   const handleMouseUp = () => {
-    setDrawing(false);
+    setAction(Actions.NONE);
   };
 
   const handleMouseMove = (
     event: React.MouseEvent<HTMLCanvasElement>
   ): void => {
-    if (!drawing) return;
+    if (action === Actions.DRAWING) {
+      const { clientX, clientY } = event;
 
-    const { clientX, clientY } = event;
+      const index = elements.length - 1;
+      const { x1, y1 } = elements[index];
 
-    const index = elements.length - 1;
-    const { x1, y1 } = elements[index];
+      const updatedElement = createElement(
+        x1,
+        y1,
+        clientX,
+        clientY,
+        elementType
+      );
 
-    const updatedElement = createElement(x1, y1, clientX, clientY, elementType);
-
-    // update
-    const arrCopy = [...elements];
-    arrCopy[index] = updatedElement;
-    setElements(arrCopy);
+      // update
+      const arrCopy = [...elements];
+      arrCopy[index] = updatedElement;
+      setElements(arrCopy);
+    }
   };
 
   return (
