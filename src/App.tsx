@@ -86,6 +86,13 @@ function App() {
   ): void => {
     const { clientX, clientY } = event;
 
+    if (tool === 'selection') {
+      const hoverElement = getElementAtPosition(clientX, clientY, elements);
+      (event.target as HTMLCanvasElement).style.cursor = hoverElement
+        ? 'move'
+        : 'default';
+    }
+
     if (action === Actions.DRAWING) {
       const index = elements.length - 1;
       const { x1, y1 } = elements[index];
