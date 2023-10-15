@@ -54,7 +54,10 @@ function App() {
       // handle moving
       const element = getElementAtPosition(clientX, clientY, elements);
       if (element) {
-        setSelectedElement(element);
+        const offsetX = clientX - element.x1;
+        const offsetY = clientY - element.y1;
+
+        setSelectedElement({ ...element, offsetX, offsetY });
         setAction(Actions.MOVING);
       }
     } else {
@@ -89,18 +92,15 @@ function App() {
 
       updateElement(index, x1, y1, clientX, clientY, tool);
     } else if (action === Actions.MOVING) {
-      const { id, x1, y1, x2, y2, type } = selectedElement as DrawElement;
+      const { id, x1, y1, x2, y2, type, offsetX, offsetY } =
+        selectedElement as DrawElement;
       const width = x2 - x1;
       const height = y2 - y1;
 
-      updateElement(
-        id,
-        clientX,
-        clientY,
-        clientX + width,
-        clientY + height,
-        type
-      );
+      const newX = clientX - (offsetX || 0);
+      const newY = clientY - (offsetY || 0);
+
+      updateElement(id, newX, newY, newX + width, newY + height, type);
     }
   };
 

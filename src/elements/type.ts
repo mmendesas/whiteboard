@@ -8,6 +8,8 @@ export type DrawElement = {
   y2: number;
   roughElement: Drawable;
   type: string;
+  offsetX?: number;
+  offsetY?: number;
 };
 
 export enum Actions {
