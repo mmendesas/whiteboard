@@ -6,6 +6,8 @@ import { createElement } from './elements/createElement';
 import { Actions, DrawElement } from './elements/type';
 import { getElementAtPosition } from './elements/getElementAtPosition';
 
+import { toolbox } from './constants';
+
 function App() {
   const { width: canvasWidth, height: canvasHeight } = useWindowResize();
 
@@ -114,33 +116,17 @@ function App() {
   return (
     <>
       <div className="fixed z-10 flex gap-6 p-4">
-        <div className="flex gap-2">
-          <input
-            type="radio"
-            id="selection"
-            checked={tool === 'selection'}
-            onChange={() => setTool('selection')}
-          />
-          <label htmlFor="selection">Selection</label>
-        </div>
-        <div className="flex gap-2">
-          <input
-            type="radio"
-            id="line"
-            checked={tool === 'line'}
-            onChange={() => setTool('line')}
-          />
-          <label htmlFor="line">Line</label>
-        </div>
-        <div className="flex gap-2">
-          <input
-            type="radio"
-            id="rectangle"
-            checked={tool === 'rectangle'}
-            onChange={() => setTool('rectangle')}
-          />
-          <label htmlFor="rectangle">Rectangle</label>
-        </div>
+        {toolbox.map((item) => (
+          <div className="flex gap-2">
+            <input
+              type="radio"
+              id={item.name}
+              checked={tool === item.name}
+              onChange={() => setTool(item.name)}
+            />
+            <label htmlFor={item.name}>{item.name}</label>
+          </div>
+        ))}
       </div>
 
       <canvas
