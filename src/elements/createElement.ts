@@ -14,8 +14,6 @@ export const createElement = (
 ): DrawElement => {
   let roughElement = generator.line(x1, y1, x2, y2);
 
-  console.log('points', { x1, y1, x2, y2 });
-
   switch (type) {
     case 'line':
       roughElement = generator.line(x1, y1, x2, y2);

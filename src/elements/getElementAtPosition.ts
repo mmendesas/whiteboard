@@ -5,7 +5,9 @@ function isWithinElement(x: number, y: number, element: DrawElement): boolean {
   const { x1, y1, x2, y2, type } = element;
 
   switch (type) {
-    case 'rectangle': {
+    case 'rectangle':
+    case 'diamond':
+    case 'ellipse': {
       const minX = Math.min(x1, x2);
       const maxX = Math.max(x1, x2);
       const minY = Math.min(y1, y2);
@@ -22,6 +24,7 @@ function isWithinElement(x: number, y: number, element: DrawElement): boolean {
 
       return Math.abs(offset) < 1;
     }
+
     default:
       return false;
   }
