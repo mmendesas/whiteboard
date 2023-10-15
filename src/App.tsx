@@ -1,8 +1,19 @@
+import { useWindowResize } from './hooks/useWindowResize';
+
 function App() {
+  const { width: canvasWidth, height: canvasHeight } = useWindowResize();
+
   return (
-    <>
-      <h1 className="text-3xl font-bold underline">Something here</h1>
-    </>
+    <canvas
+      id="canvas"
+      style={{
+        backgroundColor: '#fffce8',
+      }}
+      width={canvasWidth}
+      height={canvasHeight}
+    >
+      canvas
+    </canvas>
   );
 }
 
