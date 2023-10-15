@@ -11,6 +11,7 @@ function App() {
 
   const [elements, setElements] = useState([]);
   const [drawing, setDrawing] = useState(false);
+  const [elementType, setElementType] = useState('line');
 
   useLayoutEffect(() => {
     const canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -38,7 +39,13 @@ function App() {
 
     const { clientX, clientY } = event;
 
-    const element = createElement(clientX, clientY, clientX, clientY);
+    const element = createElement(
+      clientX,
+      clientY,
+      clientX,
+      clientY,
+      elementType
+    );
     setElements((prev) => [...prev, element]);
   };
 
@@ -56,7 +63,7 @@ function App() {
     const index = elements.length - 1;
     const { x1, y1 } = elements[index];
 
-    const updatedElement = createElement(x1, y1, clientX, clientY);
+    const updatedElement = createElement(x1, y1, clientX, clientY, elementType);
 
     // update
     const arrCopy = [...elements];
@@ -65,19 +72,42 @@ function App() {
   };
 
   return (
-    <canvas
-      id="canvas"
-      style={{
-        backgroundColor: '#fffce8',
-      }}
-      width={canvasWidth}
-      height={canvasHeight}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseMove={handleMouseMove}
-    >
-      canvas
-    </canvas>
+    <>
+      <div className="fixed z-10 flex gap-6 p-4">
+        <div className="flex gap-2">
+          <input
+            type="radio"
+            id="line"
+            checked={elementType === 'line'}
+            onChange={() => setElementType('line')}
+          />
+          <label htmlFor="line">Line</label>
+        </div>
+        <div className="flex gap-2">
+          <input
+            type="radio"
+            id="rectangle"
+            checked={elementType === 'rectangle'}
+            onChange={() => setElementType('rectangle')}
+          />
+          <label htmlFor="rectangle">Rectangle</label>
+        </div>
+      </div>
+
+      <canvas
+        id="canvas"
+        style={{
+          backgroundColor: '#fffce8',
+        }}
+        width={canvasWidth}
+        height={canvasHeight}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
+      >
+        canvas
+      </canvas>
+    </>
   );
 }
 
