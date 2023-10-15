@@ -3,7 +3,14 @@ import { DrawElement } from './type';
 
 const generator = rough.generator();
 
-export const createElement = (x1, y1, x2, y2, type): DrawElement => {
+export const createElement = (
+  id: number,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  type: string
+): DrawElement => {
   let roughElement = generator.line(x1, y1, x2, y2);
 
   switch (type) {
@@ -19,5 +26,5 @@ export const createElement = (x1, y1, x2, y2, type): DrawElement => {
       throw new Error(`Element type not supported: ${type}`);
   }
 
-  return { x1, y1, x2, y2, roughElement };
+  return { id, x1, y1, x2, y2, roughElement, type };
 };
