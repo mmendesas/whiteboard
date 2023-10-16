@@ -13,12 +13,13 @@ import { adjustElementCoordinates } from './elements/adjustElementCoordinates';
 import { resizeCoordinates } from './elements/resizeCoordinates';
 import { showResizingBounds } from './elements/bounds';
 import { renderScene } from './elements/renderScene';
+import { useHistory } from './hooks/useHistory';
 
 function App() {
   const { width: canvasWidth, height: canvasHeight } = useWindowResize();
 
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
-  const [elements, setElements] = useState<DrawElement[]>([]);
+  const [elements, setElements, undo, redo] = useHistory<DrawElement[]>([]);
   const [selectedElement, setSelectedElement] = useState<DrawElement | null>(
     null
   );
@@ -45,7 +46,7 @@ function App() {
     // update
     const arrCopy = [...elements];
     arrCopy[id] = updatedElement;
-    setElements(arrCopy);
+    setElements(arrCopy, true);
   };
 
   const handleMouseDown = (
@@ -150,7 +151,7 @@ function App() {
     <>
       <div className="fixed z-10 flex gap-6 p-4">
         {toolbox.map((item) => (
-          <div className="flex gap-2">
+          <div key={item.name} className="flex gap-2">
             <input
               type="radio"
               id={item.name}
@@ -160,6 +161,18 @@ function App() {
             <label htmlFor={item.name}>{item.name}</label>
           </div>
         ))}
+      </div>
+
+      <div style={{ position: 'fixed', bottom: 0, padding: 10 }}>
+        <button style={{ backgroundColor: '#ccc', padding: 10 }} onClick={undo}>
+          Undo
+        </button>
+        <button
+          style={{ backgroundColor: '#ccc', padding: 10, marginLeft: 10 }}
+          onClick={redo}
+        >
+          Redo
+        </button>
       </div>
 
       <canvas
