@@ -3,7 +3,7 @@ import rough from 'roughjs';
 
 import { useWindowResize } from './hooks/useWindowResize';
 import { createElement } from './elements/createElement';
-import { Actions, DrawElement } from './elements/type';
+import { Actions, Coordinates, DrawElement } from './elements/type';
 import {
   cursorForPosition,
   getElementAtPosition,
@@ -11,6 +11,7 @@ import {
 
 import { toolbox } from './constants';
 import { adjustElementCoordinates } from './elements/adjustElementCoordinates';
+import { resizeCoordinates } from './elements/resizeCoordinates';
 
 function App() {
   const { width: canvasWidth, height: canvasHeight } = useWindowResize();
@@ -64,7 +65,12 @@ function App() {
         const offsetY = clientY - element.y1;
 
         setSelectedElement({ ...element, offsetX, offsetY });
-        setAction(Actions.MOVING);
+
+        if (element.position === 'inside') {
+          setAction(Actions.MOVING);
+        } else {
+          setAction(Actions.RESIZING);
+        }
       }
     } else {
       const id = elements.length;
@@ -123,6 +129,18 @@ function App() {
       const newY = clientY - (offsetY || 0);
 
       updateElement(id, newX, newY, newX + width, newY + height, type);
+    } else if (action === Actions.RESIZING) {
+      const { id, type, position, ...coordinates } =
+        selectedElement as DrawElement;
+
+      const { x1, y1, x2, y2 } = resizeCoordinates(
+        clientX,
+        clientY,
+        position as string,
+        coordinates
+      ) as Coordinates;
+
+      updateElement(id, x1, y1, x2, y2, type);
     }
   };
 
