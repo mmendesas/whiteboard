@@ -57,7 +57,6 @@ function App() {
         break;
       case 'freehand':
         arrCopy[id].points = [...arrCopy[id].points, { x: x2, y: y2 }];
-        console.log(arrCopy[id].points);
         break;
 
       default:
@@ -160,7 +159,10 @@ function App() {
           });
 
           const elementsCopy = [...elements];
-          elementsCopy[selectedElement.id].points = newPonts;
+          elementsCopy[selectedElement.id] = {
+            ...elementsCopy[selectedElement.id],
+            points: newPonts,
+          };
           setElements(elementsCopy, true);
         } else {
           const { id, x1, y1, x2, y2, type, offsetX, offsetY } =
