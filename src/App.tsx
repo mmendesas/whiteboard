@@ -25,7 +25,7 @@ function App() {
     null
   );
   const [action, setAction] = useState<Actions>(Actions.NONE);
-  const [tool, setTool] = useState('line');
+  const [tool, setTool] = useState('rectangle');
 
   useLayoutEffect(() => {
     const { context } = renderScene(elements);

@@ -17,6 +17,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ onChange }) => {
           key={item.name}
           name={item.name}
           selected={tool === item.name}
+          icon={item.icon}
           onSelect={() => {
             setTool(item.name);
             onChange(item.name);
