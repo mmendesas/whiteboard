@@ -1,5 +1,4 @@
 import { useLayoutEffect, useState } from 'react';
-import rough from 'roughjs';
 
 import { useWindowResize } from './hooks/useWindowResize';
 import { createElement } from './elements/createElement';
@@ -13,6 +12,7 @@ import { toolbox } from './constants';
 import { adjustElementCoordinates } from './elements/adjustElementCoordinates';
 import { resizeCoordinates } from './elements/resizeCoordinates';
 import { showResizingBounds } from './elements/bounds';
+import { renderScene } from './elements/renderScene';
 
 function App() {
   const { width: canvasWidth, height: canvasHeight } = useWindowResize();
@@ -26,18 +26,8 @@ function App() {
   const [tool, setTool] = useState('line');
 
   useLayoutEffect(() => {
-    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-
+    const { context } = renderScene(elements);
     setContext(context);
-
-    // clear before re-render
-    context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-
-    // draw
-    const roughCanvas = rough.canvas(canvas);
-
-    elements.forEach(({ roughElement }) => roughCanvas.draw(roughElement));
   }, [elements]);
 
   const updateElement = (
