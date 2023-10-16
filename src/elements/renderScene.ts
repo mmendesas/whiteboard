@@ -3,7 +3,7 @@ import getStroke from 'perfect-freehand';
 import { RoughCanvas } from 'roughjs/bin/canvas';
 import { Drawable } from 'roughjs/bin/core';
 
-import { DrawElement, Point } from './type';
+import { Actions, DrawElement, Point } from './type';
 import { getSvgPathFromStroke } from '../utils/freehand';
 
 const drawElement = (
@@ -37,7 +37,11 @@ const drawElement = (
   }
 };
 
-export const renderScene = (elements: DrawElement[]) => {
+export const renderScene = (
+  elements: DrawElement[],
+  selectedElement,
+  action
+) => {
   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
 
@@ -47,7 +51,10 @@ export const renderScene = (elements: DrawElement[]) => {
   // draw
   const roughCanvas = rough.canvas(canvas);
 
-  elements.forEach((element) => drawElement(roughCanvas, context, element));
+  elements.forEach((element) => {
+    if (action === Actions.WRITING && selectedElement.id === element.id) return;
+    drawElement(roughCanvas, context, element);
+  });
 
   return { context };
 };

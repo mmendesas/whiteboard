@@ -30,14 +30,15 @@ function App() {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useLayoutEffect(() => {
-    const { context } = renderScene(elements);
+    const { context } = renderScene(elements, selectedElement, action);
     setContext(context);
-  }, [elements]);
+  }, [elements, action, selectedElement]);
 
   useEffect(() => {
     const textArea = textAreaRef.current;
     if (action === Actions.WRITING && textArea) {
       textArea?.focus();
+      textArea.value = selectedElement?.text;
     }
   }, [action, selectedElement]);
 
@@ -133,8 +134,20 @@ function App() {
     }
   };
 
-  const handleMouseUp = () => {
+  const handleMouseUp = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    const { clientX, clientY } = event;
+
     if (selectedElement) {
+      if (
+        selectedElement.type === 'text' &&
+        clientX - selectedElement.offsetX === selectedElement.x1 &&
+        clientY - selectedElement.offsetY === selectedElement.y1
+      ) {
+        // editing mode
+        setAction(Actions.WRITING);
+        return;
+      }
+
       const index = selectedElement.id;
       const { id, type } = elements[index];
 
@@ -253,14 +266,22 @@ function App() {
       </div>
 
       {action === Actions.WRITING && (
-        <textarea
+        <input
           ref={textAreaRef}
           onBlur={handleBlur}
           onFocus={() => textAreaRef.current?.select()}
           style={{
             position: 'fixed',
-            top: selectedElement?.y1,
+            top: selectedElement?.y1 - 5,
             left: selectedElement?.x1,
+            font: '24px sans-serif',
+            margin: 0,
+            padding: 0,
+            border: 0,
+            outline: 0,
+            overflow: 'hidden',
+            whiteSpace: 'pre',
+            background: 'transparent',
           }}
         />
       )}
