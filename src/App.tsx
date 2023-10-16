@@ -68,9 +68,16 @@ function App() {
         arrCopy[id].points = [...arrCopy[id].points, { x: x2, y: y2 }];
         break;
 
-      case 'text':
-        arrCopy[id].text = options.text;
+      case 'text': {
+        const textWidth = context?.measureText(options.text).width || 0;
+        const textHeight = 24;
+
+        arrCopy[id] = {
+          ...createElement(id, x1, y1, x1 + textWidth, y1 + textHeight, type),
+          text: options.text,
+        };
         break;
+      }
 
       default:
         throw new Error(`Type not recognised: ${type}`);
@@ -191,8 +198,17 @@ function App() {
 
           const newX = clientX - (offsetX || 0);
           const newY = clientY - (offsetY || 0);
+          const options = type === 'text' ? { text: selectedElement.text } : {};
 
-          updateElement(id, newX, newY, newX + width, newY + height, type);
+          updateElement(
+            id,
+            newX,
+            newY,
+            newX + width,
+            newY + height,
+            type,
+            options
+          );
         }
       }
     } else if (action === Actions.RESIZING) {
