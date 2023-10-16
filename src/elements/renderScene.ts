@@ -39,8 +39,6 @@ export const renderScene = (elements: DrawElement[]) => {
   // draw
   const roughCanvas = rough.canvas(canvas);
 
-  // elements.forEach(({ roughElement }) => roughCanvas.draw(roughElement));
-
   elements.forEach((element) => drawElement(roughCanvas, context, element));
 
   return { context };
