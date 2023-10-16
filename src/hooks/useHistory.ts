@@ -16,7 +16,8 @@ export const useHistory = <T>(initialState: T) => {
       historyCopy[index] = newState;
       setHistory(historyCopy);
     } else {
-      setHistory((prev) => [...prev, newState]);
+      const updatedState = [...history].slice(0, index + 1);
+      setHistory((prev) => [...updatedState, newState]);
       setIndex((prev) => prev + 1);
     }
   };

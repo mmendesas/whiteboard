@@ -65,6 +65,9 @@ function App() {
 
         setSelectedElement({ ...element, offsetX, offsetY });
 
+        // update state
+        setElements((prev: unknown) => prev);
+
         if (element.position === 'inside') {
           setAction(Actions.MOVING);
         } else {
