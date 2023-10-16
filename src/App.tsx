@@ -4,7 +4,10 @@ import rough from 'roughjs';
 import { useWindowResize } from './hooks/useWindowResize';
 import { createElement } from './elements/createElement';
 import { Actions, DrawElement } from './elements/type';
-import { getElementAtPosition } from './elements/getElementAtPosition';
+import {
+  cursorForPosition,
+  getElementAtPosition,
+} from './elements/getElementAtPosition';
 
 import { toolbox } from './constants';
 import { adjustElementCoordinates } from './elements/adjustElementCoordinates';
@@ -99,9 +102,9 @@ function App() {
     const { clientX, clientY } = event;
 
     if (tool === 'selection') {
-      const hoverElement = getElementAtPosition(clientX, clientY, elements);
-      (event.target as HTMLCanvasElement).style.cursor = hoverElement
-        ? 'move'
+      const element = getElementAtPosition(clientX, clientY, elements);
+      (event.target as HTMLCanvasElement).style.cursor = element
+        ? cursorForPosition(element.position)
         : 'default';
     }
 

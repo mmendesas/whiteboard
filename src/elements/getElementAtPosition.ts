@@ -1,19 +1,25 @@
 import { distance } from '../utils/math';
 import { DrawElement } from './type';
 
-function isWithinElement(x: number, y: number, element: DrawElement): boolean {
+function positionWithinElement(
+  x: number,
+  y: number,
+  element: DrawElement
+): string | null {
   const { x1, y1, x2, y2, type } = element;
 
   switch (type) {
     case 'rectangle':
     case 'diamond':
     case 'ellipse': {
-      const minX = Math.min(x1, x2);
-      const maxX = Math.max(x1, x2);
-      const minY = Math.min(y1, y2);
-      const maxY = Math.max(y1, y2);
+      const topLeft = nearPoint(x, y, x1, y1, 'tl');
+      const topRight = nearPoint(x, y, x2, y1, 'tr');
+      const bottomLeft = nearPoint(x, y, x1, y2, 'bl');
+      const bottomRight = nearPoint(x, y, x2, y2, 'br');
 
-      return x >= minX && x <= maxX && y >= minY && y <= maxY;
+      const inside = x >= x1 && x <= x2 && y >= y1 && y <= y2 ? 'inside' : null;
+
+      return topLeft || topRight || bottomLeft || bottomRight || inside;
     }
     case 'line': {
       const a = { x: x1, y: y1 };
@@ -21,12 +27,16 @@ function isWithinElement(x: number, y: number, element: DrawElement): boolean {
       const c = { x, y };
 
       const offset = distance(a, b) - (distance(a, c) + distance(b, c));
+      const start = nearPoint(x, y, x1, y1, 'start');
+      const end = nearPoint(x, y, x2, y2, 'end');
 
-      return Math.abs(offset) < 1;
+      const inside = Math.abs(offset) < 1 ? 'inside' : null;
+
+      return start || end || inside;
     }
 
     default:
-      return false;
+      return null;
   }
 }
 
@@ -35,7 +45,35 @@ export const getElementAtPosition = (
   y: number,
   elements: DrawElement[]
 ) => {
-  return elements.find((element: DrawElement) =>
-    isWithinElement(x, y, element)
-  );
+  return elements
+    .map((element: DrawElement) => ({
+      ...element,
+      position: positionWithinElement(x, y, element),
+    }))
+    .find((element: DrawElement) => element.position !== null);
+};
+
+const nearPoint = (
+  x: number,
+  y: number,
+  x1: number,
+  y1: number,
+  name: string
+): string | null => {
+  return Math.abs(x - x1) < 5 && Math.abs(y - y1) < 5 ? name : null;
+};
+
+export const cursorForPosition = (position: string | null) => {
+  switch (position) {
+    case 'tl':
+    case 'br':
+    case 'start':
+    case 'end':
+      return 'nwse-resize';
+    case 'tr':
+    case 'bl':
+      return 'nesw-resize';
+    default:
+      return 'move';
+  }
 };

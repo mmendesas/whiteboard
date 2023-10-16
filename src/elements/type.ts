@@ -10,6 +10,7 @@ export type DrawElement = {
   type: string;
   offsetX?: number;
   offsetY?: number;
+  position?: string | null;
 };
 
 export enum Actions {
