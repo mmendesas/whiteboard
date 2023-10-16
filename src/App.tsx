@@ -75,13 +75,17 @@ function App() {
       // handle moving
       const element = getElementAtPosition(clientX, clientY, elements);
       if (element) {
-        const offsetX = clientX - element.x1;
-        const offsetY = clientY - element.y1;
-
-        showResizingBounds(context, element);
-
-        setSelectedElement({ ...element, offsetX, offsetY });
-
+        if (element.type === 'freehand') {
+          // calculate offset for each point
+          const xOffsets = element.points?.map((point) => clientX - point.x);
+          const yOffsets = element.points?.map((point) => clientY - point.y);
+          setSelectedElement({ ...element, xOffsets, yOffsets });
+        } else {
+          const offsetX = clientX - element.x1;
+          const offsetY = clientY - element.y1;
+          showResizingBounds(context, element);
+          setSelectedElement({ ...element, offsetX, offsetY });
+        }
         // update state
         setElements((prev: unknown) => prev);
 
@@ -146,15 +150,30 @@ function App() {
 
       updateElement(index, x1, y1, clientX, clientY, tool);
     } else if (action === Actions.MOVING) {
-      const { id, x1, y1, x2, y2, type, offsetX, offsetY } =
-        selectedElement as DrawElement;
-      const width = x2 - x1;
-      const height = y2 - y1;
+      if (selectedElement) {
+        if (selectedElement.type === 'freehand') {
+          const newPonts = selectedElement.points?.map((_, index) => {
+            return {
+              x: clientX - selectedElement.xOffsets[index],
+              y: clientY - selectedElement.yOffsets[index],
+            };
+          });
 
-      const newX = clientX - (offsetX || 0);
-      const newY = clientY - (offsetY || 0);
+          const elementsCopy = [...elements];
+          elementsCopy[selectedElement.id].points = newPonts;
+          setElements(elementsCopy, true);
+        } else {
+          const { id, x1, y1, x2, y2, type, offsetX, offsetY } =
+            selectedElement as DrawElement;
+          const width = x2 - x1;
+          const height = y2 - y1;
 
-      updateElement(id, newX, newY, newX + width, newY + height, type);
+          const newX = clientX - (offsetX || 0);
+          const newY = clientY - (offsetY || 0);
+
+          updateElement(id, newX, newY, newX + width, newY + height, type);
+        }
+      }
     } else if (action === Actions.RESIZING) {
       const { id, type, position, ...coordinates } =
         selectedElement as DrawElement;
