@@ -83,16 +83,17 @@ function App() {
         tool
       );
       setElements((prev) => [...prev, element]);
+      setSelectedElement(element);
 
       setAction(Actions.DRAWING);
     }
   };
 
   const handleMouseUp = () => {
-    const index = elements.length - 1;
+    const index = selectedElement?.id || elements.length - 1;
     const { id, type } = elements[index];
 
-    if (action === Actions.DRAWING) {
+    if (action === Actions.DRAWING || action === Actions.RESIZING) {
       const { x1, y1, x2, y2 } = adjustElementCoordinates(elements[index]);
 
       updateElement(id, x1, y1, x2, y2, type);
