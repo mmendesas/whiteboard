@@ -5,6 +5,7 @@ import {
   LineIcon,
   RectangleIcon,
   SelectionIcon,
+  TextIcon,
 } from './components/Icons';
 
 export const toolbox = [
@@ -14,4 +15,5 @@ export const toolbox = [
   { name: 'ellipse', icon: EllipseIcon },
   { name: 'line', icon: LineIcon },
   { name: 'freehand', icon: FreeHandIcon },
+  { name: 'text', icon: TextIcon },
 ];

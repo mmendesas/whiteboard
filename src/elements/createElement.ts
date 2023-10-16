@@ -54,6 +54,9 @@ export const createElement = (
       return { id, type, points: [{ x: x1, y: y1 }] };
     }
 
+    case 'text':
+      return { id, type, x1, y1, text: '' };
+
     default:
       throw new Error(`Element type not supported: ${type}`);
   }

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { useWindowResize } from './hooks/useWindowResize';
 import { createElement } from './elements/createElement';
@@ -27,11 +27,19 @@ function App() {
   );
   const [action, setAction] = useState<Actions>(Actions.NONE);
   const [tool, setTool] = useState('rectangle');
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useLayoutEffect(() => {
     const { context } = renderScene(elements);
     setContext(context);
   }, [elements]);
+
+  useEffect(() => {
+    const textArea = textAreaRef.current;
+    if (action === Actions.WRITING && textArea) {
+      textArea?.focus();
+    }
+  }, [action, selectedElement]);
 
   const updateElement = (
     id: number,
@@ -39,7 +47,8 @@ function App() {
     y1: number,
     x2: number,
     y2: number,
-    type: string
+    type: string,
+    options?: any
   ) => {
     const arrCopy = [...elements];
 
@@ -59,6 +68,10 @@ function App() {
         arrCopy[id].points = [...arrCopy[id].points, { x: x2, y: y2 }];
         break;
 
+      case 'text':
+        arrCopy[id].text = options.text;
+        break;
+
       default:
         throw new Error(`Type not recognised: ${type}`);
     }
@@ -68,6 +81,8 @@ function App() {
   const handleMouseDown = (
     event: React.MouseEvent<HTMLCanvasElement>
   ): void => {
+    if (action === Actions.WRITING) return;
+
     const { clientX, clientY } = event;
 
     if (tool === 'selection') {
@@ -107,7 +122,7 @@ function App() {
       setElements((prev) => [...prev, element]);
       setSelectedElement(element);
 
-      setAction(Actions.DRAWING);
+      setAction(tool === 'text' ? Actions.WRITING : Actions.DRAWING);
     }
   };
 
@@ -124,6 +139,10 @@ function App() {
 
         updateElement(id, x1, y1, x2, y2, type);
       }
+    }
+
+    if (action === Actions.WRITING) {
+      return;
     }
 
     setAction(Actions.NONE);
@@ -191,6 +210,19 @@ function App() {
     }
   };
 
+  const handleBlur = (
+    event: React.FocusEvent<HTMLTextAreaElement, Element>
+  ) => {
+    const text = event.target.value;
+    const { id, x1, y1, type } = selectedElement as DrawElement;
+    updateElement(id, x1, y1, 0, 0, type, { text: event.target.value });
+
+    if (text.length > 0) {
+      setAction(Actions.NONE);
+      setSelectedElement(null);
+    }
+  };
+
   return (
     <>
       <Toolbar onChange={(name) => setTool(name)} />
@@ -203,6 +235,19 @@ function App() {
           Redo
         </button>
       </div>
+
+      {action === Actions.WRITING && (
+        <textarea
+          ref={textAreaRef}
+          onBlur={handleBlur}
+          onFocus={() => textAreaRef.current?.select()}
+          style={{
+            position: 'fixed',
+            top: selectedElement?.y1,
+            left: selectedElement?.x1,
+          }}
+        />
+      )}
 
       <canvas
         id="canvas"

@@ -26,6 +26,7 @@ export type DrawElement = {
   points?: Point[];
   xOffsets: number[];
   yOffsets: number[];
+  text: string;
 };
 
 export enum Actions {
@@ -33,4 +34,5 @@ export enum Actions {
   DRAWING = 'drawing',
   MOVING = 'moving',
   RESIZING = 'resizing',
+  WRITING = 'writing',
 }

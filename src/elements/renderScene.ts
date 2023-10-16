@@ -1,9 +1,10 @@
 import rough from 'roughjs';
 import getStroke from 'perfect-freehand';
+import { RoughCanvas } from 'roughjs/bin/canvas';
+import { Drawable } from 'roughjs/bin/core';
 
 import { DrawElement, Point } from './type';
 import { getSvgPathFromStroke } from '../utils/freehand';
-import { RoughCanvas } from 'roughjs/bin/canvas';
 
 const drawElement = (
   roughCanvas: RoughCanvas,
@@ -15,7 +16,7 @@ const drawElement = (
     case 'diamond':
     case 'ellipse':
     case 'line':
-      roughCanvas.draw(element.roughElement);
+      roughCanvas.draw(element.roughElement as Drawable);
       break;
     case 'freehand': {
       const stroke = getSvgPathFromStroke(getStroke(element.points as Point[]));
@@ -24,6 +25,11 @@ const drawElement = (
       context.fill(new Path2D(stroke));
       break;
     }
+    case 'text':
+      context.font = '24px sans-serif';
+      context.fillText(element.text, element.x1, element.y1);
+      break;
+
     default:
       throw new Error(`Element type not supported: ${element.type}`);
   }
