@@ -14,6 +14,7 @@ import { resizeCoordinates } from './elements/resizeCoordinates';
 import { showResizingBounds } from './elements/bounds';
 import { renderScene } from './elements/renderScene';
 import { useHistory } from './hooks/useHistory';
+import { Toolbar } from './components/Toolbar';
 
 function App() {
   const { width: canvasWidth, height: canvasHeight } = useWindowResize();
@@ -152,19 +153,7 @@ function App() {
 
   return (
     <>
-      <div className="fixed z-10 flex gap-6 p-4">
-        {toolbox.map((item) => (
-          <div key={item.name} className="flex gap-2">
-            <input
-              type="radio"
-              id={item.name}
-              checked={tool === item.name}
-              onChange={() => setTool(item.name)}
-            />
-            <label htmlFor={item.name}>{item.name}</label>
-          </div>
-        ))}
-      </div>
+      <Toolbar onChange={(name) => setTool(name)} />
 
       <div style={{ position: 'fixed', bottom: 0, padding: 10 }}>
         <button style={{ backgroundColor: '#ccc', padding: 10 }} onClick={undo}>
