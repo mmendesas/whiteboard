@@ -8,13 +8,14 @@ import {
   getElementAtPosition,
 } from './elements/getElementAtPosition';
 
-import { toolbox } from './constants';
 import { adjustElementCoordinates } from './elements/adjustElementCoordinates';
 import { resizeCoordinates } from './elements/resizeCoordinates';
 import { showResizingBounds } from './elements/bounds';
 import { renderScene } from './elements/renderScene';
 import { useHistory } from './hooks/useHistory';
 import { Toolbar } from './components/Toolbar';
+
+const adjustmentRequired = (type: string) => type !== 'freehand';
 
 function App() {
   const { width: canvasWidth, height: canvasHeight } = useWindowResize();
@@ -40,13 +41,28 @@ function App() {
     y2: number,
     type: string
   ) => {
-    const updatedElement = createElement(id, x1, y1, x2, y2, type);
-
-    showResizingBounds(context, updatedElement);
-
-    // update
     const arrCopy = [...elements];
-    arrCopy[id] = updatedElement;
+
+    switch (type) {
+      case 'rectangle':
+      case 'diamond':
+      case 'ellipse':
+      case 'line':
+        {
+          const updatedElement = createElement(id, x1, y1, x2, y2, type);
+          arrCopy[id] = updatedElement;
+
+          showResizingBounds(context, updatedElement);
+        }
+        break;
+      case 'freehand':
+        arrCopy[id].points = [...arrCopy[id].points, { x: x2, y: y2 }];
+        console.log(arrCopy[id].points);
+        break;
+
+      default:
+        throw new Error(`Type not recognised: ${type}`);
+    }
     setElements(arrCopy, true);
   };
 
@@ -97,7 +113,10 @@ function App() {
       const index = selectedElement.id;
       const { id, type } = elements[index];
 
-      if (action === Actions.DRAWING || action === Actions.RESIZING) {
+      if (
+        (action === Actions.DRAWING || action === Actions.RESIZING) &&
+        adjustmentRequired(type)
+      ) {
         const { x1, y1, x2, y2 } = adjustElementCoordinates(elements[index]);
 
         updateElement(id, x1, y1, x2, y2, type);

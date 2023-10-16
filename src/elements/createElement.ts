@@ -50,6 +50,10 @@ export const createElement = (
       break;
     }
 
+    case 'freehand': {
+      return { id, type, points: [{ x: x1, y: y1 }] };
+    }
+
     default:
       throw new Error(`Element type not supported: ${type}`);
   }

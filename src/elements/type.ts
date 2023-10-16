@@ -1,5 +1,10 @@
 import { Drawable } from 'roughjs/bin/core';
 
+export type Point = {
+  x: number;
+  y: number;
+};
+
 export type Coordinates = {
   x1: number;
   y1: number;
@@ -18,6 +23,7 @@ export type DrawElement = {
   offsetX?: number;
   offsetY?: number;
   position?: string | null;
+  points?: Point[];
 };
 
 export enum Actions {
