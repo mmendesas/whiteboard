@@ -7,6 +7,7 @@ import { Actions, DrawElement } from './elements/type';
 import { getElementAtPosition } from './elements/getElementAtPosition';
 
 import { toolbox } from './constants';
+import { adjustElementCoordinates } from './elements/adjustElementCoordinates';
 
 function App() {
   const { width: canvasWidth, height: canvasHeight } = useWindowResize();
@@ -79,6 +80,15 @@ function App() {
   };
 
   const handleMouseUp = () => {
+    const index = elements.length - 1;
+    const { id, type } = elements[index];
+
+    if (action === Actions.DRAWING) {
+      const { x1, y1, x2, y2 } = adjustElementCoordinates(elements[index]);
+
+      updateElement(id, x1, y1, x2, y2, type);
+    }
+
     setAction(Actions.NONE);
     setSelectedElement(null);
   };
