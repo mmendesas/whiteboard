@@ -1,3 +1,5 @@
+import { DrawElement } from './type';
+
 export const getDiamondPoints = (element: {
   x1: number;
   y1: number;
@@ -17,4 +19,39 @@ export const getDiamondPoints = (element: {
   const leftY = rightY;
 
   return [topX, topY, rightX, rightY, bottomX, bottomY, leftX, leftY];
+};
+
+export const showResizingBounds = (
+  context: CanvasRenderingContext2D | null,
+  element: DrawElement
+): void => {
+  if (!element || !context) return;
+
+  context.save();
+  context.strokeStyle = 'red';
+  context.lineWidth = 1;
+
+  context.strokeRect(
+    element.x1 - 5,
+    element.y1 - 5,
+    element.x2 - element.x1 + 10,
+    element.y2 - element.y1 + 10
+  );
+
+  // add corner dots
+  context.fillStyle = '#eee';
+
+  context.strokeStyle = '#000';
+  context.lineWidth = 1;
+  context.fillRect(element.x1 - 10, element.y1 - 10, 10, 10);
+  context.strokeRect(element.x1 - 10, element.y1 - 10, 10, 10);
+
+  context.fillRect(element.x1 - 10, element.y2, 10, 10);
+  context.strokeRect(element.x1 - 10, element.y2, 10, 10);
+
+  context.fillRect(element.x2, element.y1 - 10, 10, 10);
+  context.strokeRect(element.x2, element.y1 - 10, 10, 10);
+
+  context.fillRect(element.x2, element.y2, 10, 10);
+  context.strokeRect(element.x2, element.y2, 10, 10);
 };

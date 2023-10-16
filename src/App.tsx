@@ -12,10 +12,12 @@ import {
 import { toolbox } from './constants';
 import { adjustElementCoordinates } from './elements/adjustElementCoordinates';
 import { resizeCoordinates } from './elements/resizeCoordinates';
+import { showResizingBounds } from './elements/bounds';
 
 function App() {
   const { width: canvasWidth, height: canvasHeight } = useWindowResize();
 
+  const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
   const [elements, setElements] = useState<DrawElement[]>([]);
   const [selectedElement, setSelectedElement] = useState<DrawElement | null>(
     null
@@ -26,6 +28,8 @@ function App() {
   useLayoutEffect(() => {
     const canvas = document.getElementById('canvas') as HTMLCanvasElement;
     const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+    setContext(context);
 
     // clear before re-render
     context.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -46,6 +50,8 @@ function App() {
   ) => {
     const updatedElement = createElement(id, x1, y1, x2, y2, type);
 
+    showResizingBounds(context, updatedElement);
+
     // update
     const arrCopy = [...elements];
     arrCopy[id] = updatedElement;
@@ -63,6 +69,8 @@ function App() {
       if (element) {
         const offsetX = clientX - element.x1;
         const offsetY = clientY - element.y1;
+
+        showResizingBounds(context, element);
 
         setSelectedElement({ ...element, offsetX, offsetY });
 
