@@ -7,3 +7,9 @@
   margin: 0;
   box-sizing: border-box;
 }
+
+@layer components{
+  .custom-btn {
+    @apply px-6 py-3 text-sm bg-slate-300 rounded-md font-bold uppercase z-10 shadow-md text-slate-600;
+  }
+}

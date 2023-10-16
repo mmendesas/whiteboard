@@ -155,14 +155,11 @@ function App() {
     <>
       <Toolbar onChange={(name) => setTool(name)} />
 
-      <div style={{ position: 'fixed', bottom: 0, padding: 10 }}>
-        <button style={{ backgroundColor: '#ccc', padding: 10 }} onClick={undo}>
+      <div className="p-4 bottom-0 fixed flex gap-2">
+        <button className="custom-btn" onClick={undo}>
           Undo
         </button>
-        <button
-          style={{ backgroundColor: '#ccc', padding: 10, marginLeft: 10 }}
-          onClick={redo}
-        >
+        <button className="custom-btn" onClick={redo}>
           Redo
         </button>
       </div>
