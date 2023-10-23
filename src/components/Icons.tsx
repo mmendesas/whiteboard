@@ -88,14 +88,17 @@ export const FreeHandIcon = (props: any) => {
 
 export const TextIcon = (props: any) => {
   return getSvgBase(
-    <g strokeWidth="1.5">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-      <line x1="4" y1="20" x2="7" y2="20"></line>
-      <line x1="14" y1="20" x2="21" y2="20"></line>
-      <line x1="6.9" y1="15" x2="13.8" y2="15"></line>
-      <line x1="10.2" y1="6.3" x2="16" y2="20"></line>
-      <polyline points="5 20 11 4 13 4 20 20"></polyline>
-    </g>,
-    { ...props, title: 'Text' }
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      fill="currentColor"
+      d="M5.75 0C5.33579 0 5 0.335786 5 0.75C5 1.16421 5.33579 1.5 5.75 1.5H8V7.75C8 8.16421 8.33579 8.5 8.75 8.5C9.16421 8.5 9.5 8.16421 9.5 7.75V1.5H11.75C12.1642 1.5 12.5 1.16421 12.5 0.75C12.5 0.335786 12.1642 0 11.75 0H5.75ZM0.75 3C0.335786 3 0 3.33579"
+    ></path>,
+    {
+      ...props,
+      title: 'Text',
+      viewBox: '0 0 15 8',
+      className: 'relative -left-1',
+    }
   );
 };

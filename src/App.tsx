@@ -14,6 +14,7 @@ import { showResizingBounds } from './elements/bounds';
 import { renderScene } from './elements/renderScene';
 import { useHistory } from './hooks/useHistory';
 import { Toolbar } from './components/Toolbar';
+import { usePressedKeys } from './hooks/usePressedKeys';
 
 const adjustmentRequired = (type: string) => type !== 'freehand';
 
@@ -22,25 +23,59 @@ function App() {
 
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
   const [elements, setElements, undo, redo] = useHistory<DrawElement[]>([]);
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [startPanMousePosition, setStartPanMousePosition] = useState({
+    x: 0,
+    y: 0,
+  });
+
   const [selectedElement, setSelectedElement] = useState<DrawElement | null>(
     null
   );
   const [action, setAction] = useState<Actions>(Actions.NONE);
   const [tool, setTool] = useState('rectangle');
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const pressedKeys = usePressedKeys();
 
   useLayoutEffect(() => {
-    const { context } = renderScene(elements, selectedElement, action);
+    const { context } = renderScene(
+      elements,
+      selectedElement,
+      action,
+      panOffset
+    );
     setContext(context);
-  }, [elements, action, selectedElement]);
+  }, [elements, action, selectedElement, panOffset]);
 
   useEffect(() => {
     const textArea = textAreaRef.current;
-    if (action === Actions.WRITING && textArea) {
-      textArea?.focus();
-      textArea.value = selectedElement?.text;
+    if (action === Actions.WRITING) {
+      setTimeout(() => {
+        textArea?.focus();
+        textArea.value = selectedElement?.text;
+      }, 0);
     }
   }, [action, selectedElement]);
+
+  useEffect(() => {
+    const panFunction = (event) => {
+      setPanOffset((prev) => ({
+        x: prev.x - event.deltaX,
+        y: prev.y - event.deltaY,
+      }));
+    };
+
+    window.addEventListener('wheel', panFunction);
+    return () => {
+      window.removeEventListener('wheel', panFunction);
+    };
+  }, []);
+
+  const getMouseCoordinates = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    const clientX = event.clientX - panOffset.x;
+    const clientY = event.clientY - panOffset.y;
+    return { clientX, clientY };
+  };
 
   const updateElement = (
     id: number,
@@ -62,7 +97,7 @@ function App() {
           const updatedElement = createElement(id, x1, y1, x2, y2, type);
           arrCopy[id] = updatedElement;
 
-          showResizingBounds(context, updatedElement);
+          // showResizingBounds(context, updatedElement, panOffset);
         }
         break;
       case 'freehand':
@@ -91,7 +126,14 @@ function App() {
   ): void => {
     if (action === Actions.WRITING) return;
 
-    const { clientX, clientY } = event;
+    const { clientX, clientY } = getMouseCoordinates(event);
+
+    // middle click or space bar + click
+    if (event.button === 1 || pressedKeys.has(' ')) {
+      setAction(Actions.PANNING);
+      setStartPanMousePosition({ x: clientX, y: clientY });
+      return;
+    }
 
     if (tool === 'selection') {
       // handle moving
@@ -105,7 +147,7 @@ function App() {
         } else {
           const offsetX = clientX - element.x1;
           const offsetY = clientY - element.y1;
-          showResizingBounds(context, element);
+          // showResizingBounds(context, element, panOffset);
           setSelectedElement({ ...element, offsetX, offsetY });
         }
         // update state
@@ -135,7 +177,7 @@ function App() {
   };
 
   const handleMouseUp = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    const { clientX, clientY } = event;
+    const { clientX, clientY } = getMouseCoordinates(event);
 
     if (selectedElement) {
       if (
@@ -172,7 +214,18 @@ function App() {
   const handleMouseMove = (
     event: React.MouseEvent<HTMLCanvasElement>
   ): void => {
-    const { clientX, clientY } = event;
+    const { clientX, clientY } = getMouseCoordinates(event);
+
+    if (action === Actions.PANNING) {
+      const deltaX = clientX - startPanMousePosition.x;
+      const deltaY = clientY - startPanMousePosition.y;
+
+      setPanOffset({
+        x: panOffset.x + deltaX,
+        y: panOffset.y + deltaY,
+      });
+      return;
+    }
 
     if (tool === 'selection') {
       const element = getElementAtPosition(clientX, clientY, elements);
@@ -256,7 +309,7 @@ function App() {
     <>
       <Toolbar onChange={(name) => setTool(name)} />
 
-      <div className="p-4 bottom-0 fixed flex gap-2">
+      <div className="p-4 bottom-0 fixed flex gap-2 z-10">
         <button className="custom-btn" onClick={undo}>
           Undo
         </button>
@@ -266,14 +319,14 @@ function App() {
       </div>
 
       {action === Actions.WRITING && (
-        <input
+        <textarea
           ref={textAreaRef}
           onBlur={handleBlur}
           onFocus={() => textAreaRef.current?.select()}
           style={{
             position: 'fixed',
-            top: selectedElement?.y1 - 5,
-            left: selectedElement?.x1,
+            top: selectedElement?.y1 - 5 + panOffset.y,
+            left: selectedElement?.x1 + panOffset.x,
             font: '24px sans-serif',
             margin: 0,
             padding: 0,
@@ -290,6 +343,8 @@ function App() {
         id="canvas"
         style={{
           backgroundColor: '#fffce8',
+          position: 'absolute',
+          zIndex: 1,
         }}
         width={canvasWidth}
         height={canvasHeight}

@@ -35,4 +35,5 @@ export enum Actions {
   MOVING = 'moving',
   RESIZING = 'resizing',
   WRITING = 'writing',
+  PANNING = 'panning',
 }

@@ -40,13 +40,17 @@ const drawElement = (
 export const renderScene = (
   elements: DrawElement[],
   selectedElement,
-  action
+  action,
+  panOffset
 ) => {
   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
 
   // clear before re-render
   context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+  context.save();
+  context.translate(panOffset.x, panOffset.y);
 
   // draw
   const roughCanvas = rough.canvas(canvas);
@@ -55,6 +59,8 @@ export const renderScene = (
     if (action === Actions.WRITING && selectedElement.id === element.id) return;
     drawElement(roughCanvas, context, element);
   });
+
+  context.restore();
 
   return { context };
 };

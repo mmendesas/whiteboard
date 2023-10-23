@@ -23,7 +23,8 @@ export const getDiamondPoints = (element: {
 
 export const showResizingBounds = (
   context: CanvasRenderingContext2D | null,
-  element: DrawElement
+  element: DrawElement,
+  offset
 ): void => {
   if (!element || !context) return;
 
@@ -31,9 +32,13 @@ export const showResizingBounds = (
   context.strokeStyle = 'red';
   context.lineWidth = 1;
 
+  const x1 = element.x1 + offset.x;
+  const y1 = element.y1 + offset.y;
+  const x2 = element.x2 + offset.x;
+
   context.strokeRect(
-    element.x1 - 5,
-    element.y1 - 5,
+    x1 - 5,
+    y1 - 5,
     element.x2 - element.x1 + 10,
     element.y2 - element.y1 + 10
   );
@@ -43,15 +48,15 @@ export const showResizingBounds = (
 
   context.strokeStyle = '#000';
   context.lineWidth = 1;
-  context.fillRect(element.x1 - 10, element.y1 - 10, 10, 10);
-  context.strokeRect(element.x1 - 10, element.y1 - 10, 10, 10);
+  context.fillRect(x1 - 10, element.y1 - 10, 10, 10);
+  context.strokeRect(x1 - 10, element.y1 - 10, 10, 10);
 
-  context.fillRect(element.x1 - 10, element.y2, 10, 10);
-  context.strokeRect(element.x1 - 10, element.y2, 10, 10);
+  context.fillRect(x1 - 10, element.y2, 10, 10);
+  context.strokeRect(x1 - 10, element.y2, 10, 10);
 
-  context.fillRect(element.x2, element.y1 - 10, 10, 10);
-  context.strokeRect(element.x2, element.y1 - 10, 10, 10);
+  context.fillRect(x2, y1 - 10, 10, 10);
+  context.strokeRect(x2, y1 - 10, 10, 10);
 
-  context.fillRect(element.x2, element.y2, 10, 10);
-  context.strokeRect(element.x2, element.y2, 10, 10);
+  context.fillRect(x2, element.y2, 10, 10);
+  context.strokeRect(x2, element.y2, 10, 10);
 };
