@@ -1,4 +1,4 @@
-import { toolbox } from '../constants';
+import { toolbox } from '../constants/toolbox';
 import { ToolbarItem } from './ToolbarItem';
 import { useBoard } from '../context/BoardContext';
 

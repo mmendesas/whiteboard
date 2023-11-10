@@ -6,7 +6,7 @@ import {
   RectangleIcon,
   SelectionIcon,
   TextIcon,
-} from './components/Icons';
+} from '../components/Icons';
 
 export const toolbox = [
   { name: 'selection', icon: SelectionIcon },
