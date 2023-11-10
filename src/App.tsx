@@ -28,6 +28,8 @@ function App() {
     x: 0,
     y: 0,
   });
+  const [scale, setScale] = useState(1);
+  const [scaleOffset, setScaleOffset] = useState({ x: 0, y: 0 });
 
   const [selectedElement, setSelectedElement] = useState<DrawElement | null>(
     null
@@ -38,14 +40,16 @@ function App() {
   const pressedKeys = usePressedKeys();
 
   useLayoutEffect(() => {
-    const { context } = renderScene(
+    const { context, scaleOffsetX, scaleOffsetY } = renderScene(
       elements,
       selectedElement,
       action,
-      panOffset
+      panOffset,
+      scale
     );
     setContext(context);
-  }, [elements, action, selectedElement, panOffset]);
+    setScaleOffset({ x: scaleOffsetX, y: scaleOffsetY });
+  }, [elements, action, selectedElement, panOffset, scale]);
 
   useEffect(() => {
     const textArea = textAreaRef.current;
@@ -58,22 +62,28 @@ function App() {
   }, [action, selectedElement]);
 
   useEffect(() => {
-    const panFunction = (event) => {
-      setPanOffset((prev) => ({
-        x: prev.x - event.deltaX,
-        y: prev.y - event.deltaY,
-      }));
+    const panOrZoomFunction = (event: WheelEvent) => {
+      if (pressedKeys.has('Meta') || pressedKeys.has('Control')) {
+        handleZoom(event.deltaY * -0.01);
+      } else {
+        setPanOffset((prev) => ({
+          x: prev.x - event.deltaX,
+          y: prev.y - event.deltaY,
+        }));
+      }
     };
 
-    window.addEventListener('wheel', panFunction);
+    window.addEventListener('wheel', panOrZoomFunction);
     return () => {
-      window.removeEventListener('wheel', panFunction);
+      window.removeEventListener('wheel', panOrZoomFunction);
     };
-  }, []);
+  }, [pressedKeys]);
 
   const getMouseCoordinates = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    const clientX = event.clientX - panOffset.x;
-    const clientY = event.clientY - panOffset.y;
+    const clientX =
+      (event.clientX - panOffset.x * scale + scaleOffset.x) / scale;
+    const clientY =
+      (event.clientY - panOffset.y * scale + scaleOffset.y) / scale;
     return { clientX, clientY };
   };
 
@@ -305,11 +315,24 @@ function App() {
     }
   };
 
+  const handleZoom = (delta: number) => {
+    setScale((prev) => Math.min(Math.max(prev + delta, 0.1), 2));
+  };
+
   return (
     <>
       <Toolbar onChange={(name) => setTool(name)} />
 
       <div className="p-4 bottom-0 fixed flex gap-2 z-10">
+        <button className="custom-btn" onClick={() => handleZoom(-0.1)}>
+          -
+        </button>
+        <button className="custom-btn" onClick={() => setScale(1)}>
+          {new Intl.NumberFormat('pt-BR', { style: 'percent' }).format(scale)}
+        </button>
+        <button className="custom-btn" onClick={() => handleZoom(0.1)}>
+          +
+        </button>
         <button className="custom-btn" onClick={undo}>
           Undo
         </button>
@@ -325,9 +348,13 @@ function App() {
           onFocus={() => textAreaRef.current?.select()}
           style={{
             position: 'fixed',
-            top: selectedElement?.y1 - 5 + panOffset.y,
-            left: selectedElement?.x1 + panOffset.x,
-            font: '24px sans-serif',
+            top:
+              (selectedElement?.y1 - 5) * scale +
+              panOffset.y * scale -
+              scaleOffset.y,
+            left:
+              selectedElement?.x1 * scale + panOffset.x * scale - scaleOffset.x,
+            font: `${24 * scale}px sans-serif`,
             margin: 0,
             padding: 0,
             border: 0,

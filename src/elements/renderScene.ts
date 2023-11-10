@@ -41,7 +41,8 @@ export const renderScene = (
   elements: DrawElement[],
   selectedElement,
   action,
-  panOffset
+  panOffset,
+  scale
 ) => {
   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -49,8 +50,19 @@ export const renderScene = (
   // clear before re-render
   context.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
+  const scaledWidth = canvas.width * scale;
+  const scaledHeight = canvas.height * scale;
+
+  const scaleOffsetX = (scaledWidth - canvas.width) / 2;
+  const scaleOffsetY = (scaledHeight - canvas.height) / 2;
+
   context.save();
-  context.translate(panOffset.x, panOffset.y);
+  context.translate(
+    panOffset.x * scale - scaleOffsetX,
+    panOffset.y * scale - scaleOffsetY
+  );
+
+  context.scale(scale, scale);
 
   // draw
   const roughCanvas = rough.canvas(canvas);
@@ -62,5 +74,5 @@ export const renderScene = (
 
   context.restore();
 
-  return { context };
+  return { context, scaleOffsetX, scaleOffsetY };
 };
