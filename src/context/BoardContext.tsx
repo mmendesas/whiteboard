@@ -1,6 +1,11 @@
 import React, { createContext, useContext, useReducer } from 'react';
 
-const BoardContext = createContext(null);
+type BoardContextType = {
+  selectedTool: string;
+  selectedToolAction: (payload: any) => void;
+};
+
+const BoardContext = createContext<BoardContextType | null>(null);
 
 export const useBoard = () => {
   const context = useContext(BoardContext);
@@ -37,7 +42,16 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
   );
 };
 
-const boardReducer = (state, action) => {
+interface BoardState {
+  selectedTool: string;
+}
+
+interface BoardAction {
+  type: 'selected_tool';
+  payload: any;
+}
+
+const boardReducer = (state: BoardState, action: BoardAction) => {
   switch (action.type) {
     case 'selected_tool':
       return {
