@@ -13,16 +13,13 @@ import { resizeCoordinates } from '../elements/resizeCoordinates';
 import { showResizingBounds } from '../elements/bounds';
 import { renderScene } from '../elements/renderScene';
 import { useHistory } from '../hooks/useHistory';
-import { Toolbar } from '../components/Toolbar';
 import { usePressedKeys } from '../hooks/usePressedKeys';
 import { useBoard } from '../context/BoardContext';
 
 const adjustmentRequired = (type: string) => type !== 'freehand';
 
 export const Board = () => {
-  const boardCtx = useBoard();
-
-  console.log('state', boardCtx);
+  const { selectedTool } = useBoard();
 
   const { width: canvasWidth, height: canvasHeight } = useWindowResize();
 
@@ -40,7 +37,6 @@ export const Board = () => {
     null
   );
   const [action, setAction] = useState<Actions>(Actions.NONE);
-  const [tool, setTool] = useState('rectangle');
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const pressedKeys = usePressedKeys();
 
@@ -150,7 +146,7 @@ export const Board = () => {
       return;
     }
 
-    if (tool === 'selection') {
+    if (selectedTool === 'selection') {
       // handle moving
       const element = getElementAtPosition(clientX, clientY, elements);
       if (element) {
@@ -182,12 +178,12 @@ export const Board = () => {
         clientY,
         clientX,
         clientY,
-        tool
+        selectedTool
       );
       setElements((prev) => [...prev, element]);
       setSelectedElement(element);
 
-      setAction(tool === 'text' ? Actions.WRITING : Actions.DRAWING);
+      setAction(selectedTool === 'text' ? Actions.WRITING : Actions.DRAWING);
     }
   };
 
@@ -242,7 +238,7 @@ export const Board = () => {
       return;
     }
 
-    if (tool === 'selection') {
+    if (selectedTool === 'selection') {
       const element = getElementAtPosition(clientX, clientY, elements);
 
       (event.target as HTMLCanvasElement).style.cursor = element
@@ -254,7 +250,7 @@ export const Board = () => {
       const index = elements.length - 1;
       const { x1, y1 } = elements[index];
 
-      updateElement(index, x1, y1, clientX, clientY, tool);
+      updateElement(index, x1, y1, clientX, clientY, selectedTool);
     } else if (action === Actions.MOVING) {
       if (selectedElement) {
         if (selectedElement.type === 'freehand') {
@@ -326,8 +322,6 @@ export const Board = () => {
 
   return (
     <>
-      <Toolbar onChange={(name) => setTool(name)} />
-
       <div className="p-4 bottom-0 fixed flex gap-2 z-10">
         <button className="custom-btn" onClick={() => handleZoom(-0.1)}>
           -
