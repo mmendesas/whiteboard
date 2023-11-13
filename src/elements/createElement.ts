@@ -10,17 +10,25 @@ export const createElement = (
   y1: number,
   x2: number,
   y2: number,
-  type: string
+  type: string,
+  toolOptions: { [key: string]: any } = {}
 ): DrawElement => {
   let roughElement = generator.line(x1, y1, x2, y2);
 
+  const options = {
+    fill: toolOptions.backgroundColor,
+    stroke: toolOptions.strokeColor,
+  };
+
+  console.log('options', options);
+
   switch (type) {
     case 'line':
-      roughElement = generator.line(x1, y1, x2, y2);
+      roughElement = generator.line(x1, y1, x2, y2, options);
       break;
 
     case 'rectangle':
-      roughElement = generator.rectangle(x1, y1, x2 - x1, y2 - y1);
+      roughElement = generator.rectangle(x1, y1, x2 - x1, y2 - y1, options);
       break;
 
     case 'ellipse': {
@@ -31,7 +39,8 @@ export const createElement = (
         x1 + width / 2,
         y1 + height / 2,
         width,
-        height
+        height,
+        options
       );
       break;
     }
@@ -40,12 +49,15 @@ export const createElement = (
       const [topX, topY, rightX, rightY, bottomX, bottomY, leftX, leftY] =
         getDiamondPoints({ x1, y1, x2, y2 });
 
-      roughElement = generator.polygon([
-        [topX, topY],
-        [rightX, rightY],
-        [bottomX, bottomY],
-        [leftX, leftY],
-      ]);
+      roughElement = generator.polygon(
+        [
+          [topX, topY],
+          [rightX, rightY],
+          [bottomX, bottomY],
+          [leftX, leftY],
+        ],
+        options
+      );
 
       break;
     }

@@ -19,7 +19,7 @@ import { useBoard } from '../context/BoardContext';
 const adjustmentRequired = (type: string) => type !== 'freehand';
 
 export const Board = () => {
-  const { selectedTool } = useBoard();
+  const { selectedTool, selectedOptions } = useBoard();
 
   const { width: canvasWidth, height: canvasHeight } = useWindowResize();
 
@@ -46,11 +46,12 @@ export const Board = () => {
       selectedElement,
       action,
       panOffset,
-      scale
+      scale,
+      selectedOptions
     );
     setContext(context);
     setScaleOffset({ x: scaleOffsetX, y: scaleOffsetY });
-  }, [elements, action, selectedElement, panOffset, scale]);
+  }, [elements, action, selectedElement, panOffset, scale, selectedOptions]);
 
   useEffect(() => {
     const textArea = textAreaRef.current;
@@ -105,7 +106,15 @@ export const Board = () => {
       case 'ellipse':
       case 'line':
         {
-          const updatedElement = createElement(id, x1, y1, x2, y2, type);
+          const updatedElement = createElement(
+            id,
+            x1,
+            y1,
+            x2,
+            y2,
+            type,
+            selectedOptions
+          );
           arrCopy[id] = updatedElement;
 
           // showResizingBounds(context, updatedElement, panOffset);
@@ -120,7 +129,15 @@ export const Board = () => {
         const textHeight = 24;
 
         arrCopy[id] = {
-          ...createElement(id, x1, y1, x1 + textWidth, y1 + textHeight, type),
+          ...createElement(
+            id,
+            x1,
+            y1,
+            x1 + textWidth,
+            y1 + textHeight,
+            type,
+            selectedOptions
+          ),
           text: options.text,
         };
         break;

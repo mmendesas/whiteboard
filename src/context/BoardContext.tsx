@@ -2,7 +2,9 @@ import React, { createContext, useContext, useReducer } from 'react';
 
 type BoardContextType = {
   selectedTool: string;
+  selectedOptions: { [key: string]: any };
   selectedToolAction: (payload: any) => void;
+  selectedOptionsAction: (payload: any) => void;
 };
 
 const BoardContext = createContext<BoardContextType | null>(null);
@@ -22,6 +24,7 @@ type BoardProviderProps = {
 export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
   const initialState = {
     selectedTool: 'rectangle',
+    selectedOptions: {},
   };
 
   const [state, dispatch] = useReducer(boardReducer, initialState);
@@ -30,11 +33,16 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
     dispatch({ type: 'selected_tool', payload });
   };
 
+  const selectedOptionsAction = (payload: unknown) => {
+    dispatch({ type: 'selected_options', payload });
+  };
+
   return (
     <BoardContext.Provider
       value={{
         ...state,
         selectedToolAction,
+        selectedOptionsAction,
       }}
     >
       {children}
@@ -47,16 +55,24 @@ interface BoardState {
 }
 
 interface BoardAction {
-  type: 'selected_tool';
+  type: 'selected_tool' | 'selected_options';
   payload: any;
 }
 
 const boardReducer = (state: BoardState, action: BoardAction) => {
+  //
+  console.log('state right now', state);
+
   switch (action.type) {
     case 'selected_tool':
       return {
         ...state,
         selectedTool: action.payload.name,
+      };
+    case 'selected_options':
+      return {
+        ...state,
+        selectedOptions: action.payload,
       };
     default:
       return state;

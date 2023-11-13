@@ -9,7 +9,8 @@ import { getSvgPathFromStroke } from '../utils/freehand';
 const drawElement = (
   roughCanvas: RoughCanvas,
   context: CanvasRenderingContext2D,
-  element: DrawElement
+  element: DrawElement,
+  selectedOptions: { [key: string]: any }
 ) => {
   switch (element.type) {
     case 'rectangle':
@@ -21,14 +22,15 @@ const drawElement = (
     case 'freehand': {
       const stroke = getSvgPathFromStroke(getStroke(element.points as Point[]));
 
-      context.fillStyle = '#555';
+      context.fillStyle = selectedOptions.strokeColor || '#555';
       context.fill(new Path2D(stroke));
       break;
     }
     case 'text':
-      context.font = '24px sans-serif';
+      context.font = 'bold 30px sans-serif';
       context.textBaseline = 'top';
-      context.fillStyle = '#555';
+      context.fillStyle = selectedOptions.strokeColor || '#555';
+
       context.fillText(element.text, element.x1, element.y1);
       break;
 
@@ -42,7 +44,8 @@ export const renderScene = (
   selectedElement,
   action,
   panOffset,
-  scale
+  scale,
+  selectedOptions
 ) => {
   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -69,7 +72,7 @@ export const renderScene = (
 
   elements.forEach((element) => {
     if (action === Actions.WRITING && selectedElement.id === element.id) return;
-    drawElement(roughCanvas, context, element);
+    drawElement(roughCanvas, context, element, selectedOptions);
   });
 
   context.restore();

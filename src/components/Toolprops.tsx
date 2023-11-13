@@ -1,14 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { strokeColors, backgroundColors } from '../constants';
 import { RectangleIcon } from './Icons';
+import { useBoard } from '../context/BoardContext';
 
 export const Toolprops = () => {
   const initialState = {
     strokeColor: strokeColors[0].value,
     backgroundColor: backgroundColors[0].value,
   };
-
   const [options, setOptions] = useState(initialState);
+
+  const { selectedOptionsAction } = useBoard();
+
+  useEffect(() => {
+    selectedOptionsAction(options);
+  }, [options]);
 
   const handleOptionChange = (key: string, value: string) => {
     setOptions((prev) => ({ ...prev, [key]: value }));
