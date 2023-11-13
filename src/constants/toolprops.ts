@@ -5,3 +5,11 @@ export const strokeColors = [
   { value: '#1971c2' },
   { value: '#f0cc00' },
 ];
+
+export const backgroundColors = [
+  { value: 'transparent' },
+  { value: '#ffc9c9' },
+  { value: '#b2f2bb' },
+  { value: '#a5d8ff' },
+  { value: '#ffec99' },
+];
