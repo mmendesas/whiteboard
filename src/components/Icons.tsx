@@ -34,7 +34,7 @@ export const RectangleIcon = (props: any) =>
 export const LineIcon = (props: any) =>
   getSvgBase(
     <path d="M4.167 10h11.666" strokeWidth={props.strokeWidth || 1.5}></path>,
-    { ...props, title: 'Line', className: 'relative top-1 left-1' }
+    { ...props, title: 'Line', className: 'w-9 h-9 relative top-1 left-1' }
   );
 
 export const DiamondIcon = (props: any) => {
@@ -209,7 +209,7 @@ export const FillOptionsIcon = (props: any) => {
     {
       ...props,
       title: `fill-options-${props.name}`,
-      className: 'w-10 h-10 relative p-1 left-[2px] top-[1.5px]',
+      className: 'w-9 h-9 relative left-[3px] top-[3px]',
     }
   );
 };
@@ -245,7 +245,7 @@ export const SloppinessIcon = (props: any) => {
     {
       ...props,
       title: 'Sloppiness',
-      className: 'w-8 h-8 relative top-1 left-1',
+      className: 'w-9 h-9 relative top-1 left-1',
     }
   );
 };

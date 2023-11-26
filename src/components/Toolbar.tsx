@@ -6,7 +6,7 @@ export const Toolbar = () => {
   const { selectedTool, selectedToolAction } = useBoard();
 
   return (
-    <div className="absolute top-3 left-1/2 transform -translate-x-1/2 flex gap-3 bg-slate-300 z-10 p-3 rounded-md shadow-md">
+    <div className="absolute top-3 left-1/2 transform -translate-x-1/2 flex gap-3 bg-slate-100 z-10 p-3 rounded-md shadow-md">
       {toolbox.map((item) => (
         <ToolbarItem
           key={item.name}

@@ -13,7 +13,9 @@ export const ToolbarItem: React.FC<ToolbarItemProps> = ({
   onSelect,
   icon,
 }) => {
-  const highligth = selected ? 'bg-slate-100 text-gray-500' : '';
+  const highligth = selected
+    ? 'rounded-md bg-teal-100 border-teal-300 border-2'
+    : '';
   const Icon = icon || LineIcon;
 
   return (

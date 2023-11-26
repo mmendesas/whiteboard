@@ -17,11 +17,11 @@ import { useBoard } from '../context/BoardContext';
 
 export const ToolOptions = () => {
   const initialState = {
-    strokeColor: strokeColors[0].value,
     backgroundColor: backgroundColors[0].value,
     fillStyle: fillStyle[0].name,
-    strokeWidth: strokeWidth[0].value,
     sloppinessStyle: sloppinessStyle[0].value,
+    strokeColor: strokeColors[0].value,
+    strokeWidth: strokeWidth[0].value,
   };
   const [options, setOptions] = useState(initialState);
 
@@ -35,28 +35,60 @@ export const ToolOptions = () => {
     setOptions((prev) => ({ ...prev, [key]: value }));
   };
 
+  const selectedOptionStyle = 'rounded-md bg-teal-100 border-teal-300 border-2';
+  const notSelectedStyle = 'rounded-md bg-slate-200 border-2';
+
   return (
-    <div className="flex flex-col gap-3 bg-slate-300 z-10 p-3 shadow-xl absolute top-20 left-3 rounded-md">
-      <LineDetail
-        title="Stroke"
-        options={options}
-        onSetOption={(value: string) =>
-          handleOptionChange('strokeColor', value)
-        }
-        list={strokeColors}
-        option="strokeColor"
-      />
+    <div className="flex flex-col gap-3 bg-slate-100 z-10 p-3 shadow-xl absolute top-20 left-3 rounded-md">
+      {/* stroke color */}
+      <div>
+        <span className="text-black text-xs font-bold">Stroke</span>
+        <div className="flex gap-1">
+          {strokeColors.map(({ value }) => {
+            return (
+              <div
+                key={value}
+                className={`hover: cursor-pointer ${
+                  options.strokeColor === value
+                    ? selectedOptionStyle
+                    : notSelectedStyle
+                }`}
+                onClick={() => handleOptionChange('strokeColor', value)}
+              >
+                <RectangleIcon strokeWidth="0" color="#666" fill={value} />
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
-      <LineDetail
-        title="Background"
-        options={options}
-        onSetOption={(value: string) =>
-          handleOptionChange('backgroundColor', value)
-        }
-        list={backgroundColors}
-        option="backgroundColor"
-      />
+      {/* background color */}
+      <div>
+        <span className="text-black text-xs font-bold">Background</span>
+        <div className="flex gap-1">
+          {backgroundColors.map(({ value }) => {
+            return (
+              <div
+                key={value}
+                className={`hover: cursor-pointer ${
+                  options.backgroundColor === value
+                    ? selectedOptionStyle
+                    : notSelectedStyle
+                }`}
+                onClick={() => handleOptionChange('backgroundColor', value)}
+              >
+                <RectangleIcon
+                  strokeWidth="0"
+                  color="#666"
+                  fill={value === 'transparent' ? 'white' : value}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
+      {/* fill style */}
       <div>
         <span className="text-black text-xs font-bold">Fill</span>
         <div className="flex gap-1">
@@ -64,7 +96,9 @@ export const ToolOptions = () => {
             <div
               key={name}
               className={
-                options.fillStyle === name ? 'rounded-md bg-slate-100' : ''
+                options.fillStyle === name
+                  ? selectedOptionStyle
+                  : notSelectedStyle
               }
               onClick={() => handleOptionChange('fillStyle', name)}
             >
@@ -74,6 +108,7 @@ export const ToolOptions = () => {
         </div>
       </div>
 
+      {/* stroke width */}
       <div>
         <span className="text-black text-xs font-bold">Stroke width</span>
         <div className="flex gap-1">
@@ -81,7 +116,9 @@ export const ToolOptions = () => {
             <div
               key={name}
               className={
-                options.strokeWidth === value ? 'rounded-md bg-slate-100' : ''
+                options.strokeWidth === value
+                  ? selectedOptionStyle
+                  : notSelectedStyle
               }
               onClick={() => handleOptionChange('strokeWidth', value)}
             >
@@ -91,6 +128,7 @@ export const ToolOptions = () => {
         </div>
       </div>
 
+      {/* roughness style */}
       <div>
         <span className="text-black text-xs font-bold">Sloppiness</span>
         <div className="flex gap-1">
@@ -99,8 +137,8 @@ export const ToolOptions = () => {
               key={name}
               className={
                 options.sloppinessStyle === value
-                  ? 'rounded-md bg-slate-100'
-                  : ''
+                  ? selectedOptionStyle
+                  : notSelectedStyle
               }
               onClick={() => handleOptionChange('sloppinessStyle', value)}
             >
@@ -108,45 +146,6 @@ export const ToolOptions = () => {
             </div>
           ))}
         </div>
-      </div>
-    </div>
-  );
-};
-
-type LineDetailProps = {
-  title: string;
-  list: Array<unknown>;
-  option: string;
-  options: { [key: string]: unknown };
-  onSetOption: (value: string) => void;
-};
-
-const LineDetail: React.FC<LineDetailProps> = ({
-  title,
-  list,
-  option,
-  options,
-  onSetOption,
-}) => {
-  return (
-    <div>
-      <span className="text-black text-xs font-bold">{title}</span>
-      <div className="flex gap-1">
-        {list.map(({ value }) => {
-          return (
-            <div
-              key={value}
-              className={`hover: cursor-pointer ${
-                options[option] === value && 'rounded-md bg-slate-100'
-              }`}
-              onClick={() => onSetOption(value)}
-            >
-              <div className="border-2 border-gray-400 rounded-md">
-                <RectangleIcon strokeWidth="0" color="#666" fill={value} />
-              </div>
-            </div>
-          );
-        })}
       </div>
     </div>
   );
