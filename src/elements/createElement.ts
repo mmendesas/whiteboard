@@ -15,6 +15,12 @@ export const createElement = (
 ): DrawElement => {
   let roughElement = generator.line(x1, y1, x2, y2);
 
+  const roughOptions = {
+    fillWeight: 4, // thicker lines for hachure
+    hachureAngle: 60, // angle of hachure,
+    hachureGap: 12,
+  };
+
   const options = {
     fill: toolOptions.backgroundColor,
     fillStyle: toolOptions.fillStyle,
@@ -22,6 +28,7 @@ export const createElement = (
     stroke: toolOptions.strokeColor,
     strokeStyle: toolOptions.strokeStyle,
     strokeWidth: toolOptions.strokeWidth,
+    ...roughOptions,
   };
 
   switch (type) {
