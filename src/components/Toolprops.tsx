@@ -1,11 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   strokeColors,
   backgroundColors,
   fillStyle,
   strokeWidth,
+  sloppinessStyle,
 } from '../constants';
-import { FillOptionsIcon, LineIcon, RectangleIcon } from './Icons';
+
+import {
+  FillOptionsIcon,
+  LineIcon,
+  RectangleIcon,
+  SloppinessIcon,
+} from './Icons';
 import { useBoard } from '../context/BoardContext';
 
 export const Toolprops = () => {
@@ -14,6 +21,7 @@ export const Toolprops = () => {
     backgroundColor: backgroundColors[0].value,
     fillStyle: fillStyle[0].name,
     strokeWidth: strokeWidth[0].value,
+    sloppinessStyle: sloppinessStyle[0].value,
   };
   const [options, setOptions] = useState(initialState);
 
@@ -23,7 +31,7 @@ export const Toolprops = () => {
     selectedOptionsAction(options);
   }, [options]);
 
-  const handleOptionChange = (key: string, value: string) => {
+  const handleOptionChange = (key: string, value: string | number) => {
     setOptions((prev) => ({ ...prev, [key]: value }));
   };
 
@@ -75,11 +83,28 @@ export const Toolprops = () => {
               className={
                 options.strokeWidth === value ? 'rounded-md bg-slate-100' : ''
               }
-              onClick={() =>
-                handleOptionChange('strokeWidth', value.toString())
-              }
+              onClick={() => handleOptionChange('strokeWidth', value)}
             >
               <LineIcon color="#333" strokeWidth={value} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <span className="text-black text-xs font-bold">Sloppiness</span>
+        <div className="flex gap-1">
+          {sloppinessStyle.map(({ name, value }) => (
+            <div
+              key={name}
+              className={
+                options.sloppinessStyle === value
+                  ? 'rounded-md bg-slate-100'
+                  : ''
+              }
+              onClick={() => handleOptionChange('sloppinessStyle', value)}
+            >
+              <SloppinessIcon name={name} color="#666" />
             </div>
           ))}
         </div>

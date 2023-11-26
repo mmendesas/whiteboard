@@ -25,3 +25,9 @@ export const strokeWidth = [
   { name: 'regular', value: 2 },
   { name: 'bold', value: 3 },
 ];
+
+export const sloppinessStyle = [
+  { name: 'architect', value: 1.5 }, //
+  { name: 'artist', value: 2.8 },
+  { name: 'sloppiness', value: 5 },
+];

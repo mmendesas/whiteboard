@@ -61,7 +61,7 @@ interface BoardAction {
 
 const boardReducer = (state: BoardState, action: BoardAction) => {
   //
-  console.log('state right now', state);
+  // console.log('state right now', state);
 
   switch (action.type) {
     case 'selected_tool':
