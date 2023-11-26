@@ -24,8 +24,6 @@ export const createElement = (
     strokeWidth: toolOptions.strokeWidth,
   };
 
-  console.log('options', options);
-
   switch (type) {
     case 'line':
       roughElement = generator.line(x1, y1, x2, y2, options);
