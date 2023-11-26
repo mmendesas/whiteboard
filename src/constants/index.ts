@@ -1,2 +1,2 @@
-export * from './toolprops';
+export * from './tooloptions';
 export * from './toolbox';

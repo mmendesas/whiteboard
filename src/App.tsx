@@ -1,13 +1,13 @@
 import { BoardProvider } from './context/BoardContext';
 import { Board } from './containers/Board';
 import { Toolbar } from './components/Toolbar';
-import { Toolprops } from './components/Toolprops';
+import { ToolOptions } from './components/ToolOptions';
 
 const App = () => {
   return (
     <BoardProvider>
       <Toolbar />
-      <Toolprops />
+      <ToolOptions />
       <Board />
     </BoardProvider>
   );

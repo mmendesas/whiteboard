@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   strokeColors,
   backgroundColors,
@@ -15,7 +15,7 @@ import {
 } from './Icons';
 import { useBoard } from '../context/BoardContext';
 
-export const Toolprops = () => {
+export const ToolOptions = () => {
   const initialState = {
     strokeColor: strokeColors[0].value,
     backgroundColor: backgroundColors[0].value,
