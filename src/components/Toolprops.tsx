@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { strokeColors, backgroundColors } from '../constants';
-import { RectangleIcon } from './Icons';
+import { strokeColors, backgroundColors, fillStyle } from '../constants';
+import { FillOptionsIcon, RectangleIcon } from './Icons';
 import { useBoard } from '../context/BoardContext';
 
 export const Toolprops = () => {
   const initialState = {
     strokeColor: strokeColors[0].value,
     backgroundColor: backgroundColors[0].value,
+    fillStyle: fillStyle[0].name,
   };
   const [options, setOptions] = useState(initialState);
 
@@ -41,6 +42,22 @@ export const Toolprops = () => {
         list={backgroundColors}
         option="backgroundColor"
       />
+      <div>
+        <span className="text-black text-xs font-bold">Fill</span>
+        <div className="flex gap-1">
+          {fillStyle.map(({ name }) => (
+            <div
+              key={name}
+              className={
+                options.fillStyle === name ? 'rounded-md bg-slate-100' : ''
+              }
+              onClick={() => handleOptionChange('fillStyle', name)}
+            >
+              <FillOptionsIcon name={name} color="#333" />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

@@ -13,3 +13,9 @@ export const backgroundColors = [
   { value: '#a5d8ff' },
   { value: '#ffec99' },
 ];
+
+export const fillStyle = [
+  { name: 'hachure' },
+  { name: 'cross-hatch' },
+  { name: 'solid' },
+];

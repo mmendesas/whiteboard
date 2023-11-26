@@ -18,6 +18,7 @@ export const createElement = (
   const options = {
     fill: toolOptions.backgroundColor,
     stroke: toolOptions.strokeColor,
+    fillStyle: toolOptions.fillStyle,
   };
 
   console.log('options', options);
