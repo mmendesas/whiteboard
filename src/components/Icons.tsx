@@ -208,6 +208,7 @@ export const FillOptionsIcon = (props: any) => {
     </>,
     {
       ...props,
+      title: `fill-options-${props.name}`,
       className: 'w-10 h-10 relative p-1 left-[2px] top-[1.5px]',
     }
   );

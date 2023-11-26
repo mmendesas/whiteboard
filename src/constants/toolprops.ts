@@ -19,3 +19,9 @@ export const fillStyle = [
   { name: 'cross-hatch' },
   { name: 'solid' },
 ];
+
+export const strokeWidth = [
+  { name: 'thin', value: 1 }, //
+  { name: 'regular', value: 2 },
+  { name: 'bold', value: 3 },
+];
